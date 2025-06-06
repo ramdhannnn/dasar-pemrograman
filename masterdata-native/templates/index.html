@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rental Mobil</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h2 { color: #333; }
+        form { margin-bottom: 20px; }
+        label { display: block; margin-top: 10px; }
+        input, select { width: 100%; padding: 8px; }
+        .section { border: 1px solid #ccc; padding: 15px; margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+
+    <h1>Dashboard Rental Mobil</h1>
+
+    <!-- Mobil -->
+    <div class="section">
+        <h2>Tambah Mobil</h2>
+        <form action="/add_car" method="post">
+            <label>Model:</label>
+            <input type="text" name="model" required>
+            <label>Tahun:</label>
+            <input type="number" name="year" required>
+            <label>Brand:</label>
+            <select name="brand_id">
+                {% for brand in brands %}
+                    <option value="{{ brand.id }}">{{ brand.name }}</option>
+                {% endfor %}
+            </select>
+            <label>Tersedia (1 = ya, 0 = tidak):</label>
+            <input type="number" name="available" value="1">
+            <button type="submit">Tambah Mobil</button>
+        </form>
+
+        <h3>Daftar Mobil</h3>
+        <ul>
+            {% for car in cars %}
+                <li>{{ car.model }} ({{ car.year }}) - {{ car.brand.name }} - {% if car.available %}Tersedia{% else %}Disewa{% endif %}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Brand -->
+    <div class="section">
+        <h2>Tambah Brand</h2>
+        <form action="/add_brand" method="post">
+            <label>Nama Brand:</label>
+            <input type="text" name="name" required>
+            <button type="submit">Tambah Brand</button>
+        </form>
+
+        <h3>Daftar Brand</h3>
+        <ul>
+            {% for brand in brands %}
+                <li>{{ brand.name }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Customer -->
+    <div class="section">
+        <h2>Tambah Customer</h2>
+        <form action="/add_customer" method="post">
+            <label>Nama:</label>
+            <input type="text" name="name" required>
+            <label>Telepon:</label>
+            <input type="text" name="phone" required>
+            <button type="submit">Tambah Customer</button>
+        </form>
+
+        <h3>Daftar Customer</h3>
+        <ul>
+            {% for customer in customers %}
+                <li>{{ customer.name }} - {{ customer.phone }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Employee -->
+    <div class="section">
+        <h2>Tambah Pegawai</h2>
+        <form action="/add_employee" method="post">
+            <label>Nama:</label>
+            <input type="text" name="name" required>
+            <label>Posisi:</label>
+            <input type="text" name="position" required>
+            <button type="submit">Tambah Pegawai</button>
+        </form>
+
+        <h3>Daftar Pegawai</h3>
+        <ul>
+            {% for employee in employees %}
+                <li>{{ employee.name }} - {{ employee.position }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Rental -->
+    <div class="section">
+        <h2>Tambah Transaksi Rental</h2>
+        <form action="/add_rental" method="post">
+            <label>Mobil:</label>
+            <select name="car_id">
+                {% for car in cars if car.available %}
+                    <option value="{{ car.id }}">{{ car.model }} - {{ car.year }}</option>
+                {% endfor %}
+            </select>
+            <label>Customer:</label>
+            <select name="customer_id">
+                {% for customer in customers %}
+                    <option value="{{ customer.id }}">{{ customer.name }}</option>
+                {% endfor %}
+            </select>
+            <label>Pegawai:</label>
+            <select name="employee_id">
+                {% for employee in employees %}
+                    <option value="{{ employee.id }}">{{ employee.name }}</option>
+                {% endfor %}
+            </select>
+            <label>Tanggal Mulai (YYYY-MM-DD):</label>
+            <input type="text" name="start_date" required>
+            <label>Tanggal Selesai (YYYY-MM-DD):</label>
+            <input type="text" name="end_date" required>
+            <button type="submit">Tambah Rental</button>
+        </form>
+
+        <h3>Daftar Transaksi</h3>
+        <ul>
+            {% for rental in rentals %}
+                <li>{{ rental.customer.name }} menyewa {{ rental.car.model }} dari {{ rental.start_date }} sampai {{ rental.end_date }} (Pegawai: {{ rental.employee.name }})</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</body>
+</html>
